@@ -13,7 +13,9 @@ def index():
 def process():
     model = video_processing.process_video(request.files['video'])
 
-    return jsonify({'resp': 'i have responded'})
+    return jsonify({
+        'resp': 'i have responded',
+        'colors': [5] * 8000})
 
 if __name__ == '__main__':
     app.run(debug=True)
