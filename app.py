@@ -13,11 +13,11 @@ def index():
 @app.route('/process', methods=['POST'])
 def process():
     model = video_processing.process_video(request.files['video'])
-    visual.get_voxel_map([0, 10, 10], [[5, 5, 5], [5, 5, 6]])
+    colors = visual.get_voxel_map([0, 10, 10], [[5, 5, 5], [5, 5, 6]]).tolist()
 
     return jsonify({
         'resp': 'i have responded',
-        'colors': [5] * 8000})
+        'colors': colors})
 
 if __name__ == '__main__':
     app.run(debug=True)

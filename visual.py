@@ -1,6 +1,6 @@
 import numpy as np
 
-big_cube = np.zeros((20, 20, 20), dtype=np.uint32)
+big_cube = np.zeros((20, 20, 20), dtype=np.int)
 
 def draw_line(start, dest, subplot, size=20, axis='z'):
     increment = [(dest[0]-start[0])/size, (dest[1]-start[1])/size, (dest[2]-start[2])/size]
