@@ -1,5 +1,6 @@
 import os
 import shutil
+from localizer import localize
 
 import cv2
 
@@ -39,6 +40,7 @@ def process_video(video):
     make_frames(videoPath, dir_name)
 
     # TODO: actual processing stuff here?
+    model = localize.find_campose_and_3dpts(dir_name)
 
     cleanup(dir_name)
 

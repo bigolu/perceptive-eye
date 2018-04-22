@@ -13,7 +13,8 @@ def index():
 @app.route('/process', methods=['POST'])
 def process():
     model = video_processing.process_video(request.files['video'])
-    colors = visual.get_voxel_map([0, 10, 10], [[5, 5, 5], [5, 5, 6]]).tolist()
+    for pose in model:
+      colors = visual.get_voxel_map(pose["campose"], pose["3dpoints"]).tolist()
 
     return jsonify({
         'resp': 'i have responded',

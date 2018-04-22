@@ -99,6 +99,79 @@ class ChiliLocalizer(object):
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
+orb = cv2.ORB_create()
+
+def find_features(img):
+  global orb
+  kp = orb.detect(img, None)
+  kp, des = orb.compute(img, kp)
+  return kp, des
+
+def find_campose_and_3dpts(dir_name):
+  global c920K, c920D
+  names = []
+  i = 0
+  while os.exists("{}/{}.jpg".format(dir_name, i)):
+    names.append("{}/{}.jpg".format(dir_name, i))
+    i += 1
+
+  cl = ChiliLocalizer(cameraMat=c920K, distCoeffs=c920D)
+  all_data = []
+
+  for j in range(len(names) - 1):
+    # load the images
+    image1 = cv2.imread(names[j])
+    image2 = cv2.imread(names[j+1])
+
+    # find key features
+    f1 = find_features(image1)
+    f2 = find_features(image2)
+
+    # match the features to each other
+    bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+    matches = bf.match(f1[1], f2[1])
+    matches = sorted(matches, key=lambda x:x.distance)
+
+    # load the images into the chilitag localizer
+    cl.load_img(names[j])
+    tags = cl.find_chili()
+    r1, t1 = cl.pnp(tags)
+
+    cl.load_img(names[j+1])
+    tags = cl.find_chili()
+    r2, t2 = cl.pnp(tags)
+
+    if type(r1) == type(None) or type(r2) == type(None):
+      continue
+
+    # find the shift between the poses
+    dt = t2 - t1
+    dR = np.dot(r1.T, r2)
+    dt = np.dot(-r1.T, t2)
+    dR, J = cv2.Rodrigues(dR)
+
+    # grab the projection matrices
+    R1, R2, P1, P2, Q, roi1, roi2 = cv2.stereoRectify(
+        cl.camera_mat, cl.dist_coeffs, cl.camera_mat, cl.dist_coeffs,
+        (image1.shape[1], image1.shape[0]), dR, dt)
+
+    # triangulate points given the projection matrices into cam 1's frame of ref
+    pts1 = []
+    pts2 = []
+
+    for m in matches:
+      pts1.append(f1[0][m.queryIdx].pt)
+      pts2.append(f2[0][m.trainIdx].pt)
+    X = cv2.triangulatePoints(P1, P2, np.array(pts1).T, np.array(pts2).T)
+    X /= X[3] # div out 4th row to make homogeneous
+
+    # get the actual 3d points by transforming cam 1's frame of ref to global
+    pts3d = np.dot(r1, X[:3,:]) + t1
+    all_data.append({"campose": np.concatenate([r1, t1], axis=1),
+                     "3dpoints": pts3d.T})
+  return all_data
+
+"""
 if __name__ == "__main__":
     path = "img00206.png"
     cl = ChiliLocalizer(cameraMat=c920K, distCoeffs=c920D)
@@ -111,3 +184,4 @@ if __name__ == "__main__":
     chili_tags = cl.find_chili()
     r, t = cl.pnp(chili_tags)
     print(np.degrees(toEuler(r)), t)
+"""
