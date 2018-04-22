@@ -3,7 +3,8 @@ from numpy.linalg import norm
 from numpy.matlib import repmat
 import cv2
 import math
-from chili import find
+from localizer.chili import find
+import os
 
 c920K = np.array(
     [[ 450.88974675  , 0.   ,      299.54114384],
@@ -92,7 +93,7 @@ class ChiliLocalizer(object):
             rs = r
             ts = t
 
-        return (r, t)
+        return (rs, ts)
 
     def display_img(self):
         cv2.imshow('image', self.img_grey)
@@ -111,7 +112,7 @@ def find_campose_and_3dpts(dir_name):
   global c920K, c920D
   names = []
   i = 0
-  while os.exists("{}/{}.jpg".format(dir_name, i)):
+  while os.path.exists("{}/{}.jpg".format(dir_name, i)):
     names.append("{}/{}.jpg".format(dir_name, i))
     i += 1
 

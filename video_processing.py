@@ -1,6 +1,6 @@
 import os
 import shutil
-from localizer import localize
+import localize
 
 import cv2
 
@@ -32,7 +32,7 @@ def process_video(video):
     if not os.path.exists(dir_name):
         os.makedirs(dir_name)
     else:
-        raise Error('the folder \'{}\' in tmp/ already exists!'.format(dir_name))
+        raise Exception('the folder \'{}\' in tmp/ already exists!'.format(dir_name))
 
     videoPath = '{}/{}'.format(dir_name, video.filename)
     video.save(videoPath)

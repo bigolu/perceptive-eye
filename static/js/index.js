@@ -85,6 +85,9 @@ function constructRGB(r, g, b) {
 }
 
 function updateScene(colors) {
+  if (colors === null) {
+    return;
+  }
   for (let i = 0; i < 20; i++) {
     for (let j = 0; j < 20; j++) {
       for (let k = 0; k < 20; k++) {
