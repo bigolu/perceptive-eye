@@ -168,8 +168,16 @@ def find_campose_and_3dpts(dir_name):
 
     # get the actual 3d points by transforming cam 1's frame of ref to global
     pts3d = np.dot(r1, X[:3,:]) + t1
+    pts3d_ = []
+    for i in range(pts3d.shape[0]):
+      if pts3d[:, i][0] < 0 or pts3d[:, i][0] > 18 or \
+          pts3d[:, i][1] < 0 or pts3d[:, i][1] > 18 or \
+          pts3d[:, i][2] < 0 or pts3d[:, i][2] > 18:
+        continue
+      else:
+        pts3d_.append(pts3d[i, :])
     all_data.append({"campose": np.concatenate([r1, t1], axis=1),
-                     "3dpoints": pts3d.T})
+                     "3dpoints": np.array(pts3d_).T})
   return all_data
 
 """
