@@ -8,9 +8,44 @@
         <!--[if IE]>
         <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
         <![endif]-->
+
+        <link rel="stylesheet" type="text/css" href="static/css/index.css">
     </head>
     <body>
-        <h1> hey buddy </h1>
+        <!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/MediaStream_Recording_API/Recording_a_media_element -->
 
+        <p>Click the "Start" button to begin video recording for a few seconds. You can stop
+           the video by clicking the creatively-named "Stop" button. The "Download"
+           button will download the received data (although it's in a raw, unwrapped form
+           that isn't very useful).
+        </p>
+        <br>
+        <div class="left">
+          <div id="startButton" class="button">
+            Start
+          </div>
+          <h2>Preview</h2>
+          <video id="preview" width="160" height="120" autoplay muted></video>
+        </div>
+        <div class="right">
+          <div id="stopButton" class="button">
+            Stop
+          </div>
+          <h2>Recording</h2>
+          <video id="recording" width="160" height="120" controls></video>
+          <div id="downloadButton" class="button">
+            Download
+          </div>
+        </div>
+        <div class="bottom">
+          <pre id="log"></pre>
+        </div>
+
+        <script
+			  src="https://code.jquery.com/jquery-3.3.1.min.js"
+			  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+			  crossorigin="anonymous"></script>
+        <script src="static/js/index.js"></script>
     </body>
 </html>
+
