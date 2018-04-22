@@ -129,6 +129,9 @@ def find_campose_and_3dpts(dir_name):
     f2 = find_features(image2)
 
     # match the features to each other
+    if f1[1] is None or f2[1] is None:
+        print('f1 or f2 is None')
+        continue
     bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
     matches = bf.match(f1[1], f2[1])
     matches = sorted(matches, key=lambda x:x.distance)

@@ -162,8 +162,8 @@ function processVideo(video) {
             response.json().then(data => {
                 const colors = data.colors;
 
-                //console.log(colors);
-                //log(`SERVER RESPONSE: ${colors}`);
+                console.log(colors);
+                log(`SERVER RESPONSE: ${colors}`);
 
                 log('RENDERING');
                 renderModel(colors);

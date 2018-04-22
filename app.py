@@ -15,8 +15,11 @@ def process():
     model = video_processing.process_video(request.files['video'])
     colors = None
     if type(model) != type(None):
-      for pose in model:
-        colors = visual.get_voxel_map(pose["campose"], pose["3dpoints"]).tolist()
+        print('type of model does not equal none')
+        for pose in model:
+            colors = visual.get_voxel_map(pose["campose"], pose["3dpoints"]).tolist()
+    else:
+        print('type of model is none')
 
     return jsonify({
         'resp': 'i have responded',
