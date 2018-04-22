@@ -51,8 +51,9 @@ def get_voxel_map(camera, list_of_points, subplot, cube, length=50):
     list_of_points = np.array(list_of_points)
     for j in range(len(list_of_points)):
         delete_voxel_line(start=camera, dest=list_of_points[j], subplot=subplot, cube=cube)
-    return cube
-
+    ncube = np.ndarray.flatten(cube)
+    # the first result (cube) is the 3d cube, the second (ncube) is the 1d array
+    return cube, ncube
 
 # Here is some example code for how to run it
 '''
