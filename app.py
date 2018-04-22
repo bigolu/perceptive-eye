@@ -2,6 +2,7 @@ import pdb
 
 from flask import Flask, render_template, jsonify, request
 import video_processing
+import visual
 
 app = Flask(__name__)
 
@@ -12,6 +13,7 @@ def index():
 @app.route('/process', methods=['POST'])
 def process():
     model = video_processing.process_video(request.files['video'])
+    visual.get_voxel_map([0, 10, 10], [[5, 5, 5], [5, 5, 6]])
 
     return jsonify({
         'resp': 'i have responded',
