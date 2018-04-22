@@ -33,9 +33,10 @@ def process_video(video):
     else:
         raise Error('the folder \'{}\' in tmp/ already exists!'.format(dir_name))
 
-    video.save('{}/{}'.format(dir_name, video.filename))
+    videoPath = '{}/{}'.format(dir_name, video.filename)
+    video.save(videoPath)
 
-    make_frames(video.filename, dir_name)
+    make_frames(videoPath, dir_name)
 
     # TODO: actual processing stuff here?
 

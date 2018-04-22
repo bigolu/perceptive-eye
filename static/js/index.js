@@ -76,6 +76,8 @@ startButton.addEventListener("click", function() {
                 processVideo(recordedBlob);
             });
 
+            renderModel();
+
             log("Successfully recorded " + recordedBlob.size + " bytes of " +
                 recordedBlob.type + " media.");
         })
