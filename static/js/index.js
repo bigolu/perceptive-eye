@@ -85,11 +85,23 @@ function constructRGB(r, g, b) {
 }
 
 function updateScene(colors) {
-    // TODO: complete this function to ajax into the flask server
-    // to make transparent, set the material opacity to 0
-    var allColors = [0xff0000, 0x00ff00, 0x0000ff];
-    drawSphere(allColors[i]);
-    render();
+  for (let i = 0; i < 20; i++) {
+    for (let j = 0; j < 20; j++) {
+      for (let k = 0; k < 20; k++) {
+        let argb = colors[i][j][k];
+        if (argb == 0) {
+          myObjs.meshes[i][j][k].material.opacity = 0;
+        } else {
+          myObjs.meshes[i][j][k].material = new THREE.MeshLambertMaterial({
+              color: argb,
+              side: THREE.FrontSide,
+              transparent: true
+          });
+        }
+      }
+    }
+  }
+  render();
 }
 
 function renderModel(colors) {
@@ -102,14 +114,14 @@ function renderModel(colors) {
         myObjs.index = 0;
         myObjs.meshes = [];
 
-        var cubeSize = 22; // change the number of cubes here
+        var cubeSize = 20; // change the number of cubes here
         for (var i = 0; i < cubeSize; i++) {
             myObjs.meshes.push([]);
             for (var j = 0; j < cubeSize; j++) {
                 myObjs.meshes[i].push([]);
                 for (var k = 0; k < cubeSize; k++) {
                     myObjs.meshes[i][j].push(
-                        drawCube(constructRGB(i * 10, j * 10, k * 10), [i, j, k]));
+                        drawCube(constructRGB(0, 0, 255), [i, j, k]));
                 }
             }
         }
@@ -136,7 +148,7 @@ function log(msg) {
 
 function processVideo(video) {
     log('Sending video to server');
-    console.log(video);
+    //console.log(video);
     const fd = new FormData();
     fd.append('video', video, 'video.webm');
     fetch('/process', {
@@ -147,8 +159,8 @@ function processVideo(video) {
             response.json().then(data => {
                 const colors = data.colors;
 
-                console.log(colors);
-                log(`SERVER RESPONSE: ${colors}`);
+                //console.log(colors);
+                //log(`SERVER RESPONSE: ${colors}`);
 
                 log('RENDERING');
                 renderModel(colors);

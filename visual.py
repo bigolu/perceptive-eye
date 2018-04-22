@@ -43,7 +43,7 @@ def delete_voxel_line(start, dest, cube, length=50):
         result.append(r)
         cube[r[0]][r[1]][r[2]] = 0
         if j is 49:
-            cube[r[0]][r[1]][r[2]] = 1
+            cube[r[0]][r[1]][r[2]] = 0xff0000
 
 
 def get_voxel_map(camera, list_of_points, length=50):
@@ -52,9 +52,9 @@ def get_voxel_map(camera, list_of_points, length=50):
     list_of_points = np.array(list_of_points)
     for j in range(len(list_of_points)):
         delete_voxel_line(start=camera, dest=list_of_points[j], cube=big_cube)
-    ncube = np.ndarray.flatten(big_cube)
+    #ncube = np.ndarray.flatten(big_cube)
     # the first result (cube) is the 3d cube, the second (ncube) is the 1d array
-    return ncube
+    return big_cube
 
 # Here is some example code for how to run it
 '''
