@@ -169,7 +169,7 @@ function processVideo(video) {
         });
 }
 
-let recordingTimeMS = 1000;
+let recordingTimeMS = 15000;
 function wait(delayInMS) {
     return new Promise(resolve => setTimeout(resolve, delayInMS));
 }
