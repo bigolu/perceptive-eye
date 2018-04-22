@@ -46,6 +46,14 @@ def delete_voxel_line(start, dest, subplot, cube, length=50):
             cube[r[0]][r[1]][r[2]] = 1
 
 
+def get_voxel_map(camera, list_of_points, subplot, cube, length=50):
+    camera = np.array(camera)
+    list_of_points = np.array(list_of_points)
+    for j in range(len(list_of_points)):
+        delete_voxel_line(start=camera, dest=list_of_points[j], subplot=subplot, cube=cube)
+    return cube
+
+
 # Here is some example code for how to run it
 '''
 # Starting up matplotlib
