@@ -2,7 +2,7 @@ import ctypes
 import os
 import numpy as np
 
-path = "build/cc/libchili.dylib"
+path = "build/cc/libchili.so"
 libchili = ctypes.cdll.LoadLibrary(path)
 libchili.getNumDetect.resType = ctypes.c_int
 libchili.getNumDetect.argTypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_int]
