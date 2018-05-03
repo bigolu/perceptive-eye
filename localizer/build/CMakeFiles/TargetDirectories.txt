@@ -1,5 +1,0 @@
-/Users/bigolu/code/perceptive-eye/localizer/build/CMakeFiles/rebuild_cache.dir
-/Users/bigolu/code/perceptive-eye/localizer/build/CMakeFiles/edit_cache.dir
-/Users/bigolu/code/perceptive-eye/localizer/build/cc/CMakeFiles/rebuild_cache.dir
-/Users/bigolu/code/perceptive-eye/localizer/build/cc/CMakeFiles/edit_cache.dir
-/Users/bigolu/code/perceptive-eye/localizer/build/cc/CMakeFiles/chili.dir
