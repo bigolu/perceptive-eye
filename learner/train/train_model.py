@@ -16,23 +16,22 @@ depths = []
 all_color_paths = glob.glob(os.path.join(root_dir + "color_images/*.png"))
 #all_depth_paths = glob.glob(os.path.join(root_dir + "depth_images/*.npy"))
 num_items = len(all_color_paths)
-#num_items = 100
+#num_items = 144
 
-all_color_images = np.array([np.rollaxis( \
+all_color_images = [np.rollaxis( \
   cv2.imread(root_dir + "color_images/%05d.png" % i), -1) \
-    for i in range(num_items)])
+    for i in range(num_items)]
+
 all_depth_images = []
 for i in range(num_items):
   with open(root_dir + "depth_images/%05d.npy" % i, "rb") as fp:
     depth_image = np.load(fp)
     all_depth_images.append(depth_image.reshape([1] + list(depth_image.shape)))
-all_depth_images = np.array(all_depth_images)
 
-print(all_color_images.shape, all_depth_images.shape)
-
-batch_size = 2
-train_iter = mx.io.NDArrayIter(data=all_color_images, label=all_depth_images, batch_size=batch_size, data_name="color", label_name="depth_label")
-
+batch_size = 16
+train_iter = mx.io.NDArrayIter(data=np.array(all_color_images[:batch_size]), \
+    label=np.array(all_depth_images[:batch_size]), \
+    batch_size=batch_size // 2, data_name="color", label_name="depth_label")
 
 data = mx.sym.Variable("color")
 
@@ -62,7 +61,7 @@ relu5 = mx.sym.Activation(data=fc2, name="relu5", act_type="relu")
 fc3 = mx.sym.FullyConnected(data=relu5, name="fc3", num_hidden=3600)
 relu6 = mx.sym.Activation(data=fc3, name="relu6", act_type="relu")
 
-reshaped = mx.sym.reshape(name="reshaped", data=relu6, shape=(batch_size, 3, 30, 40))
+reshaped = mx.sym.reshape(name="reshaped", data=relu6, shape=(batch_size // 2, 3, 30, 40))
 
 dec1 = mx.sym.Deconvolution(data=reshaped, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=64, no_bias=True, name="dec1")
 conv5 = mx.sym.Convolution(data=dec1, name="conv5", num_filter=64, kernel=(3, 3), pad=(1, 1))
@@ -93,9 +92,29 @@ mod.init_optimizer(
     optimizer_params=(
       ("learning_rate", 0.01),
       ("momentum", 0.9)))
+if "v1.model" in os.listdir("."):
+  mod.load_params("v1.model")
 
 nb_epoch = 50
-mod.fit(train_iter, num_epoch=nb_epoch)#, \
+
+for e in range(nb_epoch):
+  print("epoch:", e)
+  for i in range(num_items // batch_size):
+    trainIter = mx.io.NDArrayIter(
+        data=np.array(all_color_images[i * batch_size : (i + 1) * batch_size]),
+        label=np.array(all_depth_images[i * batch_size : (i + 1) * batch_size]),
+        batch_size=batch_size // 2, data_name="color", label_name="depth_label", shuffle=True)
+    trainIter.reset()
+    mod.forward(trainIter.next(), is_train=True)
+    mod.backward()
+    mod.update()
+    metric = mx.metric.MSE(output_names=("depth_output",),
+        label_names=("depth_label",))
+    mod.score(trainIter, metric)
+    score = metric.get()[1]
+    print("mse:", score)
+    
+#mod.fit(train_iter, num_epoch=nb_epoch)#, \
 #    batch_end_callback=mx.callback.ProgressBar(all_color_images.shape[0] / batch_size))
 
 mod.save_params("v1.model")

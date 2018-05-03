@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 
 def main():
-  counter = 1440 # set based on the directory of images
+  counter = 0 # set based on the directory of images
   try:
     # Create a context object.
     # This object owns the handles to all connected realsense devices
